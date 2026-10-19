@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>For You 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg1:#0b0720;--bg2:#2b0f40;--ink:#fff;--pink:#ff9fd2;--gold:#ffd86b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%;margin:0;overflow:hidden}
+body{background:radial-gradient(ellipse at 50% 30%,var(--bg2),var(--bg1) 70%);color:var(--ink);font-family:'Quicksand',system-ui,sans-serif}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.ov{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:2;transition:opacity 1.2s,visibility 1.2s}
+.ov.off{opacity:0;visibility:hidden;pointer-events:none}
+h1{font-family:'Dancing Script',cursive,serif;font-size:clamp(32px,7.5vw,60px);margin:0 0 30px;line-height:1.2;text-shadow:0 0 26px var(--pink);max-width:760px}
+button{font:700 18px 'Quicksand',system-ui,sans-serif;color:#fff;border:0;border-radius:999px;padding:16px 38px;cursor:pointer;background:linear-gradient(135deg,#ff6fb5,#c86bff);box-shadow:0 0 28px rgba(255,120,200,.7);animation:pulse 2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 50px rgba(255,150,220,1);transform:scale(1.05)}}
+.sm{font-size:15px;padding:11px 28px;margin-top:4px;animation:none}
+#msg{position:fixed;left:0;right:0;bottom:0;padding:0 20px calc(env(safe-area-inset-bottom,0px) + 3vh);text-align:center;z-index:2;opacity:0;transform:translateY(16px);transition:opacity 2.2s,transform 2.2s;pointer-events:none}
+#msg.on{opacity:1;transform:none;pointer-events:auto}
+#msg h2{font-family:'Dancing Script',cursive,serif;font-size:clamp(26px,6vw,42px);margin:0 0 6px;text-shadow:0 0 20px var(--pink)}
+#msg p{margin:4px 0;font-size:clamp(15px,3.6vw,20px)}
+#msg .big{font-weight:700;font-size:clamp(17px,4.6vw,28px);letter-spacing:.04em;color:var(--gold);text-shadow:0 0 18px rgba(255,200,100,.8)}
+#msg a{display:inline-block;margin-top:12px;font-size:14px;color:var(--pink);opacity:.8;cursor:pointer;text-decoration:underline}
+#bl{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 5vh);text-align:center;padding:0 20px;z-index:2;opacity:0;transform:translateY(-10px);transition:opacity 3s,transform 3s;pointer-events:none}
+#bl.on{opacity:1;transform:none}
+#bl h2{font-family:'Dancing Script',cursive,serif;font-size:clamp(28px,7vw,48px);margin:0;text-shadow:0 0 24px var(--pink)}
+#bl p{margin:4px 0 0;font-size:clamp(14px,3.6vw,19px);letter-spacing:.06em;color:var(--pink)}
+#letter{z-index:3;background:rgba(11,7,32,.92);backdrop-filter:blur(6px);justify-content:flex-start;overflow-y:auto;padding:calc(env(safe-area-inset-top,0px) + 7vh) 24px 8vh}
+#letter .wrap{max-width:560px;margin:auto}
+#letter h2{font-family:'Dancing Script',cursive,serif;font-size:clamp(34px,8vw,52px);margin:0 0 20px;text-shadow:0 0 22px var(--pink)}
+#letter p{font-size:clamp(16px,4vw,19px);line-height:1.75;margin:0 0 20px}
+.ln{opacity:0;transform:translateY(8px);transition:opacity 1.8s,transform 1.8s}
+.ln.on{opacity:1;transform:none}
+#letter a{color:var(--pink);cursor:pointer;text-decoration:underline;font-size:14px}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="ov" id="intro">
+  <h1>Do you want to see how long I want to love you? 💗</h1>
+  <button id="go">Click here to see</button>
+</div>
+<div id="bl">
+  <h2>You are my lily, my whole world 🌸</h2>
+  <p>blooming in my life, just like this flower blooms</p>
+</div>
+<div id="msg">
+  <h2>I’m a Felinophile too 🐱</h2>
+  <p>and I love my cat more than anyone…</p>
+  <p class="big">MORE THAN ANYONE IN THIS WORLD 💖</p>
+  <button id="more" class="sm">One more thing 💌</button><br>
+  <a id="re">↻ watch again</a>
+</div>
+<div class="ov off" id="letter">
+  <div class="wrap">
+    <h2 class="ln">My lily 🌸</h2>
+    <p class="ln">I’m sorry for the day I told you I wanted to leave. I was sick, and I was scared I might not make it, and I thought leaving would spare you from being burdened by me. I was wrong. You were never a burden, and I’m not leaving you.</p>
+    <p class="ln">When I saw you in that red dress with flowers in your hand, I thought, she looks like a flower herself. A lily starts as a tiny seed and blooms in its own time, and so do you: graceful, glowing, and worth every bit of waiting.</p>
+    <p class="ln">I know you still don’t fully trust me because of what happened in your past, and that’s okay. Trust can’t be forced, it’s earned. I’ll earn it, at your pace. And when you’re completely ready for a relationship, I’ll be right here, choosing you. 💗</p>
+    <a id="back">← back to the lily</a>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id),cv=$('c'),x=cv.getContext('2d');
+let W,H,S,gy,cx,SH,dpr;
+function rs(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);S=Math.min(W,H*.8,700)/620;cx=W/2;gy=H*.7;SH=Math.min(H*.42,460*S)}
+addEventListener('resize',rs);rs();
+const cl=(v,a=0,b=1)=>Math.min(b,Math.max(a,v)),seg=(t,a,b)=>cl((t-a)/(b-a)),ez=t=>t*t*(3-2*t),R=Math.random;
+const stars=Array.from({length:90},()=>({x:R(),y:R()*.75,r:R()*1.4+.3,p:R()*6}));
+const leaves=[{u:.2,s:-1,l:100},{u:.34,s:1,l:110},{u:.5,s:-1,l:90},{u:.64,s:1,l:80}];
+const cols=[['#ff7ac8','#ffd1f0'],['#7ad7ff','#e0f6ff'],['#ffd166','#fff3c4'],['#b07aff','#ecdcff'],['#7affb8','#dcffee'],['#ff9a7a','#ffe0d6'],['#ff8fd0','#ffffff']];
+const B=cols.map(c=>({c,rx:90+R()*150,ry:50+R()*90,sp:.3+R()*.35,ph:R()*6,z:.7+R()*.5}));
+const sc=['#ffd1f0','#ffe9a8','#ffffff','#ff9fd2'];
+let P=[],t0=null,shown=false,lt=0;
+
+function mound(){const g=x.createRadialGradient(cx,gy,5,cx,gy+8*S,90*S);g.addColorStop(0,'#4a3340');g.addColorStop(1,'#1a1020');x.fillStyle=g;x.beginPath();x.ellipse(cx,gy+6*S,80*S,16*S,0,0,7);x.fill()}
+function bfly(px,py,z,fl,c,al,tilt){
+  x.save();x.globalAlpha=al;x.translate(px,py);x.rotate(tilt);x.scale(z,z);x.shadowColor=c[0];x.shadowBlur=16;
+  for(const sd of[-1,1]){x.save();x.scale(sd*fl,1);
+    const g=x.createRadialGradient(18,-12,2,18,-12,40);g.addColorStop(0,c[1]);g.addColorStop(1,c[0]);x.fillStyle=g;
+    x.beginPath();x.moveTo(0,-2);x.bezierCurveTo(10,-46,52,-38,42,-6);x.bezierCurveTo(30,2,10,2,0,-2);x.fill();
+    x.beginPath();x.moveTo(0,0);x.bezierCurveTo(30,2,40,30,22,32);x.bezierCurveTo(8,34,2,14,0,0);x.fill();
+    x.fillStyle='rgba(255,255,255,.75)';x.beginPath();x.arc(28,-18,3.5,0,7);x.fill();x.restore()}
+  x.shadowBlur=0;x.fillStyle='#2a1f3a';x.beginPath();x.ellipse(0,6,2.6,13,0,0,7);x.fill();
+  x.strokeStyle='#2a1f3a';x.lineWidth=1;x.beginPath();x.moveTo(0,-6);x.quadraticCurveTo(-4,-18,-10,-22);x.moveTo(0,-6);x.quadraticCurveTo(4,-18,10,-22);x.stroke();x.restore()}
+
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min(.05,(now-(lt||now))/1000);lt=now;
+  const t=t0===null?-1:(now-t0)/1000,tm=now/1000;
+  x.clearRect(0,0,W,H);x.fillStyle='#fff';
+  for(const s of stars){x.globalAlpha=.25+.6*Math.abs(Math.sin(tm*.8+s.p));x.beginPath();x.arc(s.x*W,s.y*H,s.r,0,7);x.fill()}
+  x.globalAlpha=1;
+  if(t<0){mound();return}
+  const g=ez(seg(t,2.2,9.5)),b=ez(seg(t,9,10.8)),o=ez(seg(t,10.5,17)),bf=seg(t,12,14.5);
+  const sw=Math.sin(tm*1.1)*5*S*g,bx=cx,by=gy,tx=cx+30*S+sw,ty=gy-SH,qx=cx-50*S,qy=gy-SH*.5;
+  const bz=u=>{const v=1-u;return[v*v*bx+2*v*u*qx+u*u*tx,v*v*by+2*v*u*qy+u*u*ty]};
+  const [fx,fy]=bz(Math.max(g,.0001));
+
+  // seed + ripple
+  if(t<2.5){
+    const d=ez(seg(t,0,1.3)),sk=seg(t,1.5,2.3),sy=(gy*.15)+(gy-14*S-gy*.15)*d+sk*24*S;
+    const gr=x.createRadialGradient(cx,sy,0,cx,sy,46*S);gr.addColorStop(0,'rgba(255,225,130,.9)');gr.addColorStop(1,'rgba(255,225,130,0)');
+    x.fillStyle=gr;x.beginPath();x.arc(cx,sy,46*S,0,7);x.fill();
+    x.fillStyle='#f6d88a';x.beginPath();x.ellipse(cx,sy,6*S,9*S,.5,0,7);x.fill();
+  }
+  if(t>1.3&&t<2.8){const p=seg(t,1.3,2.8);x.strokeStyle='rgba(255,220,130,'+(1-p)+')';x.lineWidth=2*S;x.beginPath();x.ellipse(cx,gy,p*120*S,p*30*S,0,0,7);x.stroke()}
+
+  // flower halo
+  if(b>0){x.globalCompositeOperation='lighter';const r=(70+210*o)*S,h=x.createRadialGradient(fx,fy,0,fx,fy,r);
+    h.addColorStop(0,'rgba(255,150,215,'+(.3+.12*Math.sin(tm*2))*b+')');h.addColorStop(1,'rgba(255,150,215,0)');
+    x.fillStyle=h;x.beginPath();x.arc(fx,fy,r,0,7);x.fill();x.globalCompositeOperation='source-over'}
+
+  // golden ring with creepers
+  {const rp=ez(seg(t,2.4,13)),ra=ez(seg(t,2.2,4));
+  if(ra>0){const rx=cx+30*S,ry=gy-SH,r=190*S,a0=Math.PI/2,sp=rp*Math.PI;
+    x.save();x.globalAlpha=ra;x.lineCap='round';x.shadowColor='rgba(255,200,80,.9)';x.shadowBlur=16*S;
+    const gg=x.createLinearGradient(rx-r,ry-r,rx+r,ry+r);gg.addColorStop(0,'#fff1b0');gg.addColorStop(.5,'#ffc83d');gg.addColorStop(1,'#fff1b0');
+    x.strokeStyle=gg;x.lineWidth=3.5*S;x.beginPath();x.arc(rx,ry,r,a0-sp,a0+sp);x.stroke();
+    x.lineWidth=1.5*S;x.setLineDash([2*S,9*S]);x.lineDashOffset=-tm*6;x.beginPath();x.arc(rx,ry,r*.92,a0-sp,a0+sp);x.stroke();x.setLineDash([]);x.shadowBlur=0;
+    const n=Math.floor(rp*110);
+    for(const sd of[-1,1]){
+      const pt=i=>{const a=a0+sd*i/110*Math.PI,rr=r+4*S+Math.sin(i*.45+tm*.8)*9*S;return[a,rx+Math.cos(a)*rr,ry+Math.sin(a)*rr]};
+      x.strokeStyle='#5fd08a';x.lineWidth=2.2*S;x.beginPath();
+      for(let i=0;i<=n;i++){const[,px,py]=pt(i);i?x.lineTo(px,py):x.moveTo(px,py)}x.stroke();
+      for(let i=3;i<=n;i+=6){const[a,px,py]=pt(i),lg=cl((n-i)/10);
+        x.fillStyle='#4fc57f';x.beginPath();x.ellipse(px,py,9*lg*S,3.6*lg*S,a+((i/6|0)%2?1:-1)*.9,0,7);x.fill();
+        if(i%18==3){x.fillStyle='#ff9fd2';x.shadowColor='#ff9fd2';x.shadowBlur=10*S;x.beginPath();x.arc(px+Math.cos(a)*9*S,py+Math.sin(a)*9*S,3.4*lg*S,0,7);x.fill();x.shadowBlur=0}
+        if(i%12==9){x.strokeStyle='#5fd08a';x.lineWidth=1.2*S;x.beginPath();x.arc(px+Math.cos(a)*6*S,py+Math.sin(a)*6*S,5*lg*S,a+Math.PI,a+Math.PI+4.2);x.stroke()}}
+      if(rp<1){const a=a0+sd*sp;x.fillStyle='#fff';x.shadowColor='#ffd86b';x.shadowBlur=16*S;x.beginPath();x.arc(rx+Math.cos(a)*r,ry+Math.sin(a)*r,4*S,0,7);x.fill();x.shadowBlur=0}}
+    x.restore()}}
+
+  // stem
+  if(g>0){x.lineCap='round';x.shadowColor='rgba(120,255,160,.7)';x.shadowBlur=14*S;x.strokeStyle='#5fd08a';x.lineWidth=(5.5-1.5*g)*S;
+    x.beginPath();for(let i=0;i<=40;i++){const[p,q]=bz(g*i/40);i?x.lineTo(p,q):x.moveTo(p,q)}x.stroke();x.shadowBlur=0}
+  // leaves
+  for(const L of leaves){const lg=ez(seg(g,L.u,L.u+.3));if(lg<=0)continue;
+    const[p,q]=bz(L.u),l=L.l*S*lg,w=l*.14;
+    x.save();x.translate(p,q);x.rotate(L.s>0?-.7+Math.sin(tm+L.u*9)*.05:-Math.PI+.7-Math.sin(tm+L.u*9)*.05);x.scale(1,L.s>0?1:-1);
+    const gr=x.createLinearGradient(0,0,l,0);gr.addColorStop(0,'#2f9e5f');gr.addColorStop(1,'#86eaa8');
+    x.shadowColor='rgba(120,255,170,.6)';x.shadowBlur=10*S;x.fillStyle=gr;
+    x.beginPath();x.moveTo(0,0);x.bezierCurveTo(l*.3,-w,l*.7,-w*.8,l,l*.12);x.bezierCurveTo(l*.7,w*.9,l*.3,w,0,0);x.fill();
+    x.shadowBlur=0;x.strokeStyle='rgba(20,90,50,.5)';x.lineWidth=S;x.beginPath();x.moveTo(0,0);x.quadraticCurveTo(l*.5,-w*.1,l,l*.12);x.stroke();x.restore()}
+
+  // lily
+  if(b>0){
+    x.save();x.translate(fx,fy);x.rotate(.12+Math.sin(tm*1.1)*.03);
+    const sz=b*(.38+.62*o)*S,L=135*sz,w=46*sz*(.8+.4*o),k=.08+o*.46;
+    for(const i of[0,5,1,4,2,3]){
+      x.save();x.rotate((i-2.5)*k);
+      const gr=x.createLinearGradient(0,0,0,-L);gr.addColorStop(0,'#ffd86b');gr.addColorStop(.25,'#fff6fb');gr.addColorStop(.75,'#ffd0e6');gr.addColorStop(1,'#ff8fc4');
+      x.shadowColor='rgba(255,150,215,.95)';x.shadowBlur=(14+26*o)*S;x.fillStyle=gr;
+      x.beginPath();x.moveTo(0,0);x.bezierCurveTo(w,-L*.25,w*1.1,-L*.7,0,-L);x.bezierCurveTo(-w*1.1,-L*.7,-w,-L*.25,0,0);x.fill();
+      x.shadowBlur=0;x.strokeStyle='rgba(255,120,190,.5)';x.lineWidth=1.2*S;x.beginPath();x.moveTo(0,-L*.05);x.lineTo(0,-L*.85);x.stroke();
+      if(o>.3){x.fillStyle='rgba(220,70,140,'+o*.8+')';for(let j=0;j<6;j++){x.beginPath();x.arc((j%2?1:-1)*w*.18*(1+j%3*.3),-L*(.18+j*.08),1.7*S,0,7);x.fill()}}
+      x.restore()}
+    if(o>.35){const so=seg(o,.35,1);
+      for(let j=0;j<6;j++){const l=(95+(j%2)*12)*sz*(.6+.4*so);x.save();x.rotate((j-2.5)*.2*so);
+        x.strokeStyle='rgba(255,240,200,.9)';x.lineWidth=1.8*S;x.beginPath();x.moveTo(0,0);x.lineTo(0,-l);x.stroke();
+        x.shadowColor='#ffc04d';x.shadowBlur=10*S;x.fillStyle='#ff9a3c';x.beginPath();x.ellipse(0,-l,3.5*S,6*S,0,0,7);x.fill();x.restore()}}
+    x.restore()}
+  mound();
+
+  // sparkles
+  if(t>1.4&&P.length<170&&R()<.7){
+    let px,py;if(o>.1){px=fx+(R()-.5)*280*S*o;py=fy+(R()-.5)*220*S*o}else{const q=bz(R()*Math.max(g,.05));px=q[0]+(R()-.5)*30*S;py=q[1]}
+    P.push({x:px,y:py,vx:(R()-.5)*8,vy:-8-R()*18,l:0,m:2+R()*2,r:(1+R()*2)*S,c:sc[R()*4|0]})}
+  x.globalCompositeOperation='lighter';
+  for(let i=P.length-1;i>=0;i--){const p=P[i];p.l+=dt;if(p.l>p.m){P.splice(i,1);continue}
+    p.x+=p.vx*dt;p.y+=p.vy*dt;const a=Math.sin(p.l/p.m*Math.PI);x.globalAlpha=a;x.fillStyle=p.c;x.shadowColor=p.c;x.shadowBlur=8;
+    x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}
+  x.globalCompositeOperation='source-over';x.shadowBlur=0;x.globalAlpha=1;
+
+  // butterflies
+  if(bf>0)for(const u of B){const a=tm*u.sp+u.ph,px=fx+Math.cos(a)*u.rx*S,py=fy+20*S+Math.sin(a*1.7)*u.ry*S+Math.sin(tm*3+u.ph)*8*S,vx=-Math.sin(a)*u.rx*u.sp;
+    bfly(px,py,u.z*S*.75*bf,.2+.8*Math.abs(Math.sin(tm*9+u.ph)),u.c,bf,cl(vx*.004,-.5,.5))}
+
+  $('bl').classList.toggle('on',t>11);
+  if(t>18.5&&!shown){shown=true;$('msg').classList.add('on')}
+}
+
+let LT=[];
+const clearLines=()=>{LT.forEach(clearTimeout);LT=[];document.querySelectorAll('#letter .ln').forEach(e=>e.classList.remove('on'))};
+$('go').onclick=()=>{$('intro').classList.add('off');P=[];t0=performance.now()};
+$('more').onclick=()=>{
+  $('msg').classList.remove('on');
+  clearLines();
+  $('letter').classList.remove('off');
+  $('letter').scrollTop=0;
+  document.querySelectorAll('#letter .ln').forEach((e,i)=>LT.push(setTimeout(()=>e.classList.add('on'),600+i*2600)));
+};
+$('back').onclick=()=>{clearLines();$('letter').classList.add('off');$('msg').classList.add('on')};
+$('re').onclick=()=>{shown=false;$('msg').classList.remove('on');P=[];t0=performance.now()};
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
